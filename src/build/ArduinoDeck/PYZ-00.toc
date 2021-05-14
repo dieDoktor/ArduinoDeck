@@ -1,0 +1,3 @@
+('F:\\HachiDeck '
+ 'Software\\ArduinoDeck-master\\src\\build\\ArduinoDeck\\PYZ-00.pyz',
+ [])

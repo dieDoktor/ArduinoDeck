@@ -25,7 +25,7 @@ please read over the README file:
 """
 with open("Setup.txt","r") as data:
 	values = data.readlines()
-	for i in range(0,len(values)):
+	for i in ranghe(0,len(values)):
 		exec(values[i] )
 		
 class MainPanel(wx.Panel):
@@ -230,8 +230,9 @@ class MainPanel(wx.Panel):
 		item = self.panel_bar.AddFoldPanel("Button Image", collapsed=True,cbstyle=self.csStyle)
 
 		self.Change = wx.Button(item,label="Change Image",name="ChangeImage",size=(-1,-1),style=wx.BORDER_NONE)
+		self.Add = wx.Button(item,label="Add Image",name="AddImage",size=(-1,-1),style=wx.BORDER_NONE)
 
-		self.ButtonImage = [self.Change]
+		self.ButtonImage = [self.Change, self.Add]
 
 		for i in range(0,len(self.ButtonImage)):
 			self.panel_bar.AddFoldPanelWindow(item, self.ButtonImage[i])
@@ -346,21 +347,20 @@ class MainPanel(wx.Panel):
 			if held == True:
 				for i in range(0,5):
 					for j in range(0,3):
-						  num = (i)+(j*5)
-						  if(new_x > (self.edge+((68)+self.padding)*i)) & (new_x < (self.edge+((68)+self.padding)*i)+58):
-								if(new_y > (self.edge+((68)+self.padding)*j)) & (new_y < (self.edge+((68)+self.padding)*j)+58):
-									ButtonSwitch = "Button"+str(num+1)
-									placeholder = self.ButtonLayout[name]
-									self.ButtonLayout[name] = self.ButtonLayout[ButtonSwitch]
-									Image = self.ButtonLayout[name]["Image"]
-									bmp = wx.Bitmap(self.ImageDir+Image, wx.BITMAP_TYPE_ANY)
-									exec("self." + name + ".SetBitmapLabel(bmp)")
-
-									self.ButtonLayout[ButtonSwitch] = placeholder
-									Image = self.ButtonLayout[ButtonSwitch]["Image"]
-									bmp = wx.Bitmap(self.ImageDir+Image, wx.BITMAP_TYPE_ANY)
-									exec("self." + ButtonSwitch + ".SetBitmapLabel(bmp)")
-									self.Refresh()
+						num = (i)+(j*5)
+						if(new_x > (self.edge+((68)+self.padding)*i)) & (new_x < (self.edge+((68)+self.padding)*i)+58):
+							if(new_y > (self.edge+((68)+self.padding)*j)) & (new_y < (self.edge+((68)+self.padding)*j)+58):
+								ButtonSwitch = "Button"+str(num+1)
+								placeholder = self.ButtonLayout[name]
+								self.ButtonLayout[name] = self.ButtonLayout[ButtonSwitch]
+								Image = self.ButtonLayout[name]["Image"]
+								bmp = wx.Bitmap(self.ImageDir+Image, wx.BITMAP_TYPE_ANY)
+								exec("self." + name + ".SetBitmapLabel(bmp)")
+								self.ButtonLayout[ButtonSwitch] = placeholder
+								Image = self.ButtonLayout[ButtonSwitch]["Image"]
+								bmp = wx.Bitmap(self.ImageDir+Image, wx.BITMAP_TYPE_ANY)
+								exec("self." + ButtonSwitch + ".SetBitmapLabel(bmp)")
+								self.Refresh()
 				
 				# If it is below the garbage line, delete the button and replace the image with the default blank
 				if new_y > 443:
@@ -572,7 +572,7 @@ class MainPanel(wx.Panel):
 
 	def StartStopDeck(self,*args):
 		try:
-			print args
+			print(args)
 		except:
 			args = False
 
@@ -600,7 +600,7 @@ class MainPanel(wx.Panel):
 		else:
 			ports = list(serial.tools.list_ports.comports())
 			for p in ports:
-				print str(p)
+				print(str(p))
 				if "Arduino Mega 2560" in str(p):
 					port = str(p).split(" - ")[0]
 					break
@@ -727,8 +727,8 @@ class MainPanel(wx.Panel):
 
 		self.Scene = wx.Choice(self.OptionPanel, -1, pos=(8,28), choices=self.SceneList,name="Scene")
 
-		print self.Scene
-		print self.Scene.GetChildren()
+		print(self.Scene)
+		print(self.Scene.GetChildren())
 		self.OptionPanelButtons = [self.Scene]
 
 		for i in range(0,len(self.OptionPanelButtons)):
@@ -896,29 +896,28 @@ class MainPanel(wx.Panel):
 class MainFrame(wx.Frame):
 
 #----------------------------------------------------------------------
-	  def __init__(self):
+	def __init__(self):
+		wx.Frame.__init__(self, None, title="Arduino Deck",size=(870,750))
+		self.panel = MainPanel(self)
+		self.SetBackgroundColour("#272822")
+		self.Bind(wx.EVT_CLOSE, self.OnClose)
+		self.Show()
 
-			wx.Frame.__init__(self, None, title="Arduino Deck",size=(870,750))
-			self.panel = MainPanel(self)
-			self.SetBackgroundColour("#272822")
-			self.Bind(wx.EVT_CLOSE, self.OnClose)
-			self.Show()
-
-	  def OnClose(self,event):
-			self.panel.OnClose()
-			self.Destroy()
+	def OnClose(self,event):
+		self.panel.OnClose()
+		self.Destroy()
 
 #----------------------------------------------------------------------
 if __name__ == "__main__":
 	  client = obsws("localhost", 4444, obspswd)
 	  client_connected = False
 	  try:
-		client.connect()
-		client_connected = True
+	      client.connect()
+	      client_connected = True
 	  except:
-		None
+	      None
 	  app = wx.App(False)
 	  frame = MainFrame()
 	  app.MainLoop()
 	  if client_connected == True:
-		client.disconnect()
+	      client.disconnect()
